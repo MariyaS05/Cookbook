@@ -21,6 +21,7 @@ extension Container {
 final class RouterService: ObservableObject {
     @Published var navigationPath: NavigationPath = .init()
     @Published var sheetScreen: SheetScreen?
+    @Published var networkError: NetworkError?
     
     func push(_ screen: Screen) {
         navigationPath.append(screen)
@@ -34,6 +35,10 @@ final class RouterService: ObservableObject {
 
     func popToRoot() {
         navigationPath = .init()
+    }
+    
+    func presentAlert(_ error: NetworkError) {
+        networkError = error
     }
     
     func presentSheet(_ sheet: SheetScreen) {

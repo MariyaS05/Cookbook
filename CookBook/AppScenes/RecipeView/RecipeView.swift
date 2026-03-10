@@ -24,15 +24,6 @@ struct RecipeView: View {
                 recipesView
             }
         }
-        
-        .alert(.alertTitle, isPresented: Binding(
-                get: { viewModel.state.networkError != nil },
-                set: { _ in viewModel.state.networkError = nil }
-            )) {
-                Button(.alertOkButtonTitle, role: .cancel) {}
-            } message: {
-                Text(viewModel.state.networkError?.localizedDescription ?? "")
-            }
         .frame(maxHeight: .infinity, alignment: .top)
         .background(.hexFDF6EC)
     }

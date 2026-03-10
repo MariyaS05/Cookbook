@@ -17,6 +17,15 @@ struct RootView: View {
         NavigationStack(path: $router.navigationPath) {
             createTabView()
         }
+        .alert(.alertTitle, isPresented: Binding(
+            get: { router.networkError != nil },
+            set: { _ in router.networkError = nil }
+        )) {
+            Button(.alertOkButtonTitle, role: .cancel) {}
+        } message: {
+            Text(router.networkError?.localizedDescription ?? "")
+        }
+        
     }
     
     func createTabView() -> some View {
@@ -24,7 +33,7 @@ struct RootView: View {
             Tab(.tabRecipe, systemImage: "book.pages") {
                 RecipeView()
             }
-
+            
             Tab(.tabFavorites, systemImage: "heart.fill") {
                 FavouriteView()
             }
