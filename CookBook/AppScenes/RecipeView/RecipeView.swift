@@ -25,11 +25,11 @@ struct RecipeView: View {
             }
         }
         
-        .alert("Something goes wrong", isPresented: Binding(
+        .alert(.alertTitle, isPresented: Binding(
                 get: { viewModel.state.networkError != nil },
                 set: { _ in viewModel.state.networkError = nil }
             )) {
-                Button("OK", role: .cancel) {}
+                Button(.alertOkButtonTitle, role: .cancel) {}
             } message: {
                 Text(viewModel.state.networkError?.localizedDescription ?? "")
             }
@@ -72,10 +72,10 @@ struct RecipeView: View {
     
     private var headerView: some View {
         VStack(alignment: .leading, spacing: Layout.headerSpacing) {
-            Text("Recipe book")
+            Text(.recipeMainTitle)
                 .font(.playfairDisplay(.bold, 30))
             
-            Text("Your favorite recipes, all in one place")
+            Text(.recipeMainSubtitle)
                 .font(.playfairDisplay(.medium, 20))
         }
         

@@ -21,12 +21,11 @@ struct RootView: View {
     
     func createTabView() -> some View {
         TabView {
-            Tab("Recipe", systemImage: "book.pages") {
+            Tab(.tabRecipe, systemImage: "book.pages") {
                 RecipeView()
             }
 
-            
-            Tab("Favorites", systemImage: "heart.fill") {
+            Tab(.tabFavorites, systemImage: "heart.fill") {
                 FavouriteView()
             }
         }
