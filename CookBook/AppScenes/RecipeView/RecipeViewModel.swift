@@ -29,8 +29,16 @@ extension RecipeViewModel {
         var recipes: [Recipe] = []
         var countries: [Country] = []
         var categories: [Category] = []
+        var loadingState: LoadingState = .loading
+        var networkError: NetworkError? = nil
+    }
+    
+    enum LoadingState {
+        case loading
+        case loaded
     }
 }
+
 private extension RecipeViewModel {
     func fetchRecipes() {
         Task {
@@ -39,9 +47,10 @@ private extension RecipeViewModel {
             case .success(let recipes):
                 await MainActor.run {
                     self.state.recipes = recipes
+                    self.state.loadingState = .loaded
                 }
             case .failure(let error):
-                print(error)
+                state.networkError = error
             }
         }
     }
@@ -55,7 +64,7 @@ private extension RecipeViewModel {
                     self.state.categories = categories
                 }
             case .failure(let error):
-                print(error)
+                state.networkError = error
             }
         }
     }

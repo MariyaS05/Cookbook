@@ -52,6 +52,6 @@ final class RecipeService: RecipeServiceProtocol, APIClientProtocol {
         
         guard !meals.isEmpty else { return .failure(.unknown)}
         
-        return .success(Array(meals.prefix(20)))
+        return .success(Array(meals.prefix(10)))
     }
 }
