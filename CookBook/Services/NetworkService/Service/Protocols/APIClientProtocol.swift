@@ -35,6 +35,7 @@ extension APIClientProtocol {
             return .failure(.invalidResponse)
         }
     
+        print(String(data: data, encoding: .utf8))
         
         switch NetworkHTTPResponseService(urlResponse: httpResponse) {
         case .success:

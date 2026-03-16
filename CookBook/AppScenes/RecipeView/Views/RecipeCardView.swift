@@ -12,7 +12,7 @@ struct RecipeCardView: View {
     
     var body: some View {
         VStack(spacing: 8) {
-            imageView
+            RecipeImageView(recipe: recipe)
             
             Text(recipe.name)
                 .font(.playfairDisplay(.medium, 16))
@@ -40,22 +40,10 @@ struct RecipeCardView: View {
         .background(.hexC2714F20)
         .clipShape(.rect(cornerRadius: 16))
     }
-    
-    private var imageView: some View {
-        AsyncImage(url: recipe.thumbnailURL, scale: 1) { image in
-            image
-                .resizable()
-                .aspectRatio(1, contentMode: .fill)
-                .clipShape(.rect(cornerRadius: 12))
-        } placeholder: {
-            Image(.empty)
-                .resizable()
-                .aspectRatio(1, contentMode: .fill)
-                .clipShape(.rect(cornerRadius: 12))
-        }
-    }
 }
 
 #Preview {
-    RecipeCardView(recipe: Recipe(id: "2", name: "sjdehjfshdjhfsjkhdfjhsdjfhjkshdsjkdhfjhsjdfhjshjhjhskjhdfjkhsjkdhf", category: "TEts", area: "Cndin", thumbnailURL: URL(string: "https://www.themealdb.com/images/media/meals/qwrtut1468418027.jpg"), instructions: "", youtubeURL: nil, sourceURL: nil))
+    RecipeCardView(recipe: Recipe.mockRecipe)
 }
+
+

@@ -16,8 +16,6 @@ struct CategoryListDTO: Decodable {
 
 struct CategoryDTO: Decodable {
     let strCategory: String?
-//    let strCategoryThumb: String?
-//    let strCategoryDescription: String?
 }
 
 extension CategoryDTO {

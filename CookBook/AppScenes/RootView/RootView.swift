@@ -16,6 +16,13 @@ struct RootView: View {
     var body: some View {
         NavigationStack(path: $router.navigationPath) {
             createTabView()
+            
+                .navigationDestination(for: RouterService.Screen.self, destination: { screen in
+                    switch screen {
+                    case .detailRecipe(let id):
+                        DetailRecipeView(viewModel: .init(id: id))
+                    }
+                })
         }
         .alert(.alertTitle, isPresented: Binding(
             get: { router.networkError != nil },
@@ -25,10 +32,9 @@ struct RootView: View {
         } message: {
             Text(router.networkError?.localizedDescription ?? "")
         }
-        
     }
     
-    func createTabView() -> some View {
+    private func createTabView() -> some View {
         TabView {
             Tab(.tabRecipe, systemImage: "book.pages") {
                 RecipeView()

@@ -10,6 +10,7 @@ enum RecipeAPIEndpoint: APIEndpointProtocol {
     case countries
     case categories
     case byLetter(String)
+    case byId(String)
     
     var method: HTTPMethod {
         return .get
@@ -19,9 +20,9 @@ enum RecipeAPIEndpoint: APIEndpointProtocol {
         switch self {
         case .byLetter, .byCategory: return "/api/json/v1/1/search.php"
         case .countries, .categories: return "/api/json/v1/1/list.php"
+        case .byId: return "/api/json/v1/1/lookup.php"
         }
     }
-    
     
     var baseURL: String { "https://www.themealdb.com" }
     
@@ -37,6 +38,8 @@ enum RecipeAPIEndpoint: APIEndpointProtocol {
             return ["c": "list"]
         case .byLetter(let letter):
             return ["f": letter]
+        case .byId(let id):
+            return ["i": id]
         }
     }
     

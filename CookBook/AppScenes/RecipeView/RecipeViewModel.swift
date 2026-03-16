@@ -13,6 +13,9 @@ final class RecipeViewModel: ViewModel {
     @Injected(\.recipeService)
     private var recipeService
     
+    @Injected(\.router)
+    private var router
+    
     @Published
     var state: State = .init()
     
@@ -22,6 +25,15 @@ final class RecipeViewModel: ViewModel {
         fetchRecipes()
         fetchCategories()
     }
+    
+    @MainActor
+    func presentDetailRecipeView(_ id: String) {
+        router.push(.detailRecipe(id: id))
+    }
+    
+    func refreshRecipeList() {
+        fetchRecipes()
+    }
 }
 
 extension RecipeViewModel {
@@ -30,7 +42,6 @@ extension RecipeViewModel {
         var countries: [Country] = []
         var categories: [Category] = []
         var loadingState: LoadingState = .loading
-        var networkError: NetworkError? = nil
     }
     
     enum LoadingState {
@@ -43,14 +54,14 @@ private extension RecipeViewModel {
     func fetchRecipes() {
         Task {
             let initialRecipesResult = await recipeService.fetchInitials()
-            switch initialRecipesResult {
-            case .success(let recipes):
-                await MainActor.run {
+            await MainActor.run {
+                switch initialRecipesResult {
+                case .success(let recipes):
                     self.state.recipes = recipes
                     self.state.loadingState = .loaded
+                case .failure(let error):
+                    router.presentAlert(error)
                 }
-            case .failure(let error):
-                state.networkError = error
             }
         }
     }
@@ -58,13 +69,13 @@ private extension RecipeViewModel {
     func fetchCategories() {
         Task {
             let initialCategoryResult = await recipeService.fetchCategories()
-            switch initialCategoryResult {
-            case .success(let categories):
-                await MainActor.run {
+            await MainActor.run {
+                switch initialCategoryResult {
+                case .success(let categories):
                     self.state.categories = categories
+                case .failure(let error):
+                    router.presentAlert(error)
                 }
-            case .failure(let error):
-                state.networkError = error
             }
         }
     }
