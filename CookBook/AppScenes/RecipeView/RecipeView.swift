@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Factory
 
 struct RecipeView: View {
     @StateObject var viewModel = RecipeViewModel()
@@ -95,5 +96,7 @@ struct RecipeView: View {
 }
 
 #Preview {
+    let sercvice = Container.shared.recipeService.register { MockRecipeService() }
+ 
     RecipeView()
 }

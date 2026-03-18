@@ -8,7 +8,7 @@
 import Factory
 
 final class MockRecipeService: RecipeServiceProtocol {
-    var shouldFail: Bool = false
+    var shouldFail: Bool = true
     
     func fetchByCategory(_ category: String) async -> Result<[Recipe], NetworkError> {
         guard !shouldFail else {

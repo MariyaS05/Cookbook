@@ -33,8 +33,9 @@ struct DetailRecipeView: View {
     @ViewBuilder
     private func setupLoadedViewState(_ recipe: Recipe) -> some View {
         ScrollView {
-            VStack(spacing: 0) {
+            VStack(spacing: 8) {
                 RecipeImageView(recipe: recipe)
+                    .stretchy()
                 
                 createTitleView(recipe)
                 createIngredientsView(recipe)
