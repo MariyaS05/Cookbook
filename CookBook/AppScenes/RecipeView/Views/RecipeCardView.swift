@@ -43,7 +43,7 @@ struct RecipeCardView: View {
 }
 
 #Preview {
-    RecipeCardView(recipe: Recipe.mockRecipe)
+    RecipeCardView(recipe: Recipe.mockRecipe1)
 }
 
 

@@ -37,7 +37,7 @@ struct RecipeFullInfo: Identifiable, Hashable {
 
 
 extension Recipe {
-    static let mockRecipe: Recipe = .init(
+    static let mockRecipe1: Recipe = .init(
         id: "1",
         name: "Mock Recipe",
         category: "Mock category",
@@ -48,6 +48,20 @@ extension Recipe {
         sourceURL: nil,
         ingredients: [Ingredient(name: "", measure: "")]
     )
+    
+    static let mockRecipe2: Recipe = .init(
+        id: "2",
+        name: "Mock Recipe",
+        category: "Mock category",
+        area: "Mock area",
+        thumbnailURL: URL(string:"https://www.themealdb.com/images/media/meals/qwrtut1468418027.jpg"),
+        instructions: nil,
+        youtubeURL: nil,
+        sourceURL: nil,
+        ingredients: [Ingredient(name: "", measure: "")]
+    )
+    
+    static let mockRecipeList: [Recipe] = [mockRecipe1, mockRecipe2]
 }
 
 extension Recipe: Hashable {
