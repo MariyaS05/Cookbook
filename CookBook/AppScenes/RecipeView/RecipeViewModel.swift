@@ -10,17 +10,35 @@ import Combine
 import Factory
 
 final class RecipeViewModel: ViewModel {
+    //MARK: - Injected
     @Injected(\.recipeService)
     private var recipeService
     
+    @Injected(\.router)
+    private var router
+    
+    //MARK: - Published
     @Published
     var state: State = .init()
+    
+    //MARK: - Private
+    @ObservationIgnored
+    private var refreshTask: Task<Void, Never>?
     
     override init() {
         super.init()
         
         fetchRecipes()
         fetchCategories()
+    }
+    
+    @MainActor
+    func presentDetailRecipeView(_ id: String) {
+        router.push(.detailRecipe(id: id))
+    }
+    
+    func refreshRecipeList() {
+        fetchRecipes()
     }
 }
 
@@ -30,7 +48,6 @@ extension RecipeViewModel {
         var countries: [Country] = []
         var categories: [Category] = []
         var loadingState: LoadingState = .loading
-        var networkError: NetworkError? = nil
     }
     
     enum LoadingState {
@@ -41,16 +58,20 @@ extension RecipeViewModel {
 
 private extension RecipeViewModel {
     func fetchRecipes() {
-        Task {
+        refreshTask?.cancel()
+        refreshTask = Task {
+            guard !Task.isCancelled else { return }
             let initialRecipesResult = await recipeService.fetchInitials()
-            switch initialRecipesResult {
-            case .success(let recipes):
-                await MainActor.run {
+            
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                switch initialRecipesResult {
+                case .success(let recipes):
                     self.state.recipes = recipes
                     self.state.loadingState = .loaded
+                case .failure(let error):
+                    router.presentAlert(error)
                 }
-            case .failure(let error):
-                state.networkError = error
             }
         }
     }
@@ -58,13 +79,13 @@ private extension RecipeViewModel {
     func fetchCategories() {
         Task {
             let initialCategoryResult = await recipeService.fetchCategories()
-            switch initialCategoryResult {
-            case .success(let categories):
-                await MainActor.run {
+            await MainActor.run {
+                switch initialCategoryResult {
+                case .success(let categories):
                     self.state.categories = categories
+                case .failure(let error):
+                    router.presentAlert(error)
                 }
-            case .failure(let error):
-                state.networkError = error
             }
         }
     }

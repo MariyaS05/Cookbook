@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Factory
 
 struct RecipeView: View {
     @StateObject var viewModel = RecipeViewModel()
@@ -19,7 +20,7 @@ struct RecipeView: View {
             switch viewModel.state.loadingState {
             case .loading:
                 ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .progressStyle()
             case .loaded:
                 recipesView
             }
@@ -52,9 +53,16 @@ struct RecipeView: View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Layout.gridSpacing) {
                 ForEach(viewModel.state.recipes, id: \.id) { recipe in
-                    RecipeCardView(recipe: recipe)
+                    Button {
+                        viewModel.presentDetailRecipeView(recipe.id)
+                    } label: {
+                        RecipeCardView(recipe: recipe)
+                    }
                 }
             }
+        }
+        .refreshable {
+            viewModel.refreshRecipeList()
         }
         .contentMargins(.vertical, Layout.defaultSpacing)
         .scrollIndicators(.hidden)
@@ -88,5 +96,7 @@ struct RecipeView: View {
 }
 
 #Preview {
+    let sercvice = Container.shared.recipeService.register { MockRecipeService() }
+ 
     RecipeView()
 }
