@@ -19,6 +19,9 @@ final class DetailRecipeViewModel: ViewModel {
     @Published
     var viewState: LoadingState = .loading
     
+    @Published
+    var isFavorite: Bool = false
+    
     private var id: String
     
     init(id: String) {
@@ -28,7 +31,13 @@ final class DetailRecipeViewModel: ViewModel {
         initialSetup()
     }
     
-    private func initialSetup() {
+    func toggleFavorite() {
+        
+    }
+}
+
+private extension DetailRecipeViewModel {
+    func initialSetup() {
         Task {
             let recipeResult = await recipeService.fetchById(id)
             await MainActor.run {
@@ -43,9 +52,7 @@ final class DetailRecipeViewModel: ViewModel {
     }
 }
 
-
 extension DetailRecipeViewModel {
-    
     struct ViewState {
         let recipe: Recipe?
     }
