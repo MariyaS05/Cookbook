@@ -10,6 +10,7 @@ import SwiftUI
 struct DetailRecipeView: View {
     
     @StateObject var viewModel: DetailRecipeViewModel
+    @State private var triggerAnimation = false
     
     @Environment(\.openURL) private var openURL
     
@@ -48,12 +49,24 @@ struct DetailRecipeView: View {
             }
         }
         .overlay(alignment: .bottomTrailing ,content: {
-            Button(action: viewModel.toggleFavorite) {
+            Button(action: {
+                viewModel.toggleFavorite()
+                triggerAnimation.toggle()
+            }) {
                 Image(systemName: viewModel.isFavorite ? "heart.fill" : "heart")
-                    .font(.customFont(PlayfairDisplay.bold, 50))
-                    .foregroundStyle(.hexC2714F)
+                    .font(.customFont(PlayfairDisplay.bold, 40))
+                    .symbolEffect(.bounce.down.byLayer, options: .nonRepeating)
                     .padding(40)
+                    .id(triggerAnimation)
+                    .foregroundStyle(
+                                   LinearGradient(
+                                    gradient: Gradient(colors: [.red.opacity(0.5), .red]),
+                                       startPoint: .top,
+                                       endPoint: .bottom
+                                   )
+                               )
             }
+            
         })
         .contentMargins(.bottom, 30)
         .scrollIndicators(.hidden)
@@ -78,7 +91,6 @@ struct DetailRecipeView: View {
             } label: {
                 Text("Source")
                     .underline(true)
-                
             }
         }
         .padding()
