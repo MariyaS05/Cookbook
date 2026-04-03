@@ -10,14 +10,20 @@ import Combine
 import Factory
 
 final class RecipeViewModel: ViewModel {
+    //MARK: - Injected
     @Injected(\.recipeService)
     private var recipeService
     
     @Injected(\.router)
     private var router
     
+    //MARK: - Published
     @Published
     var state: State = .init()
+    
+    //MARK: - Private
+    @ObservationIgnored
+    private var refreshTask: Task<Void, Never>?
     
     override init() {
         super.init()
@@ -52,8 +58,12 @@ extension RecipeViewModel {
 
 private extension RecipeViewModel {
     func fetchRecipes() {
-        Task {
+        refreshTask?.cancel()
+        refreshTask = Task {
+            guard !Task.isCancelled else { return }
             let initialRecipesResult = await recipeService.fetchInitials()
+            
+            guard !Task.isCancelled else { return }
             await MainActor.run {
                 switch initialRecipesResult {
                 case .success(let recipes):
