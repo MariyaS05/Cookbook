@@ -11,6 +11,8 @@ struct DetailRecipeView: View {
     
     @StateObject var viewModel: DetailRecipeViewModel
     
+    @Environment(\.openURL) private var openURL
+    
     var body: some View {
         VStack {
             switch viewModel.viewState {
@@ -42,10 +44,47 @@ struct DetailRecipeView: View {
                 createInstructionView(recipe)
                     .padding()
                 
+                createSourceView(recipe)
             }
         }
+        .overlay(alignment: .bottomTrailing ,content: {
+            Button(action: viewModel.toggleFavorite) {
+                Image(systemName: viewModel.isFavorite ? "heart.fill" : "heart")
+                    .font(.customFont(PlayfairDisplay.bold, 50))
+                    .foregroundStyle(.hexC2714F)
+                    .padding(40)
+            }
+        })
         .contentMargins(.bottom, 30)
         .scrollIndicators(.hidden)
+    }
+    
+    @ViewBuilder
+    private func createSourceView(_ recipe: Recipe) -> some View {
+        HStack {
+            Image(systemName: "link")
+    
+            Button {
+                guard let url = recipe.youtubeURL else { return }
+                openURL(url)
+            } label: {
+                Text("Youtube")
+                    .underline(true)
+            }
+            
+            Button {
+                guard let url = recipe.sourceURL else { return }
+                openURL(url)
+            } label: {
+                Text("Source")
+                    .underline(true)
+                
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .font(.playfairDisplay(.regular, 20))
+        .foregroundStyle(.appBlack.opacity(0.6))
     }
     
     @ViewBuilder
