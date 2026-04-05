@@ -7,6 +7,7 @@
 
 import Combine
 import Factory
+import Foundation
 
 final class DetailRecipeViewModel: ViewModel {
     
@@ -15,6 +16,9 @@ final class DetailRecipeViewModel: ViewModel {
     
     @Injected(\.router)
     private var router
+    
+    @Injected(\.recipeStoreService)
+    private var recipeStoreService
     
     @Published
     var viewState: LoadingState = .loading
@@ -32,7 +36,17 @@ final class DetailRecipeViewModel: ViewModel {
     }
     
     func toggleFavorite() {
-        
+        switch viewState {
+        case .loading:
+            break
+        case .loaded(let viewState):
+            guard let recipe = viewState.recipe else { return }
+            do {
+                try recipeStoreService.toggleStoreRecipe(recipe)
+            } catch {
+                router.presentAlert(.unknown)
+            }
+        }
     }
 }
 
@@ -44,11 +58,26 @@ private extension DetailRecipeViewModel {
                 switch recipeResult {
                 case .success(let recipe):
                     viewState = .loaded(.init(recipe: recipe))
+                    bindIsFavorite()
                 case .failure(let error):
                     router.presentAlert(error)
                 }
             }
         }
+    }
+    
+    func bindIsFavorite() {
+        recipeStoreService.recipeStoredData
+            .filter({ !$0.isEmpty })
+            .sink { [weak self] _ in
+                
+                guard let self = self,
+                      case .loaded(let viewState) = self.viewState,
+                      let recipe = viewState.recipe else { return }
+                
+                isFavorite = recipeStoreService.checkIsStored(recipe: recipe)
+            }
+            .store(in: &cancellable)
     }
 }
 

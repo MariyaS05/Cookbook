@@ -11,4 +11,6 @@ import Factory
 class ViewModel: ObservableObject {
     @Injected(\.router)
     private var router
+    
+    var cancellable = Set<AnyCancellable>()
 }
