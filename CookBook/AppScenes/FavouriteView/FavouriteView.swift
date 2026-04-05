@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FavouriteView: View {
     @StateObject var viewModel = FavouriteViewModel()
+    
     var body: some View {
         Group {
             switch viewModel.viewsState {
@@ -16,7 +17,7 @@ struct FavouriteView: View {
                 ProgressView()
                     .progressStyle()
             case .loaded(let state):
-                recipesView(state.recipes)
+                recipesView(viewModel.filterRecipes(state.recipes))
             }
         }
         .task {
@@ -27,21 +28,24 @@ struct FavouriteView: View {
     }
     
     private func recipesView(_ recipes: [Recipe]) -> some View {
-        ScrollView {
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Layout.gridSpacing) {
-                ForEach(recipes, id: \.id) { recipe in
-                    Button {
-                        viewModel.presentDetailRecipeView(recipe.id)
-                    } label: {
-                        RecipeCardView(recipe: recipe)
+        VStack {
+            SearchBar(text: $viewModel.searchText)
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Layout.gridSpacing) {
+                    ForEach(recipes, id: \.id) { recipe in
+                        Button {
+                            viewModel.presentDetailRecipeView(recipe.id)
+                        } label: {
+                            RecipeCardView(recipe: recipe)
+                        }
                     }
                 }
             }
+            
+            .contentMargins(.vertical, Layout.defaultSpacing)
+            .scrollIndicators(.hidden)
+            .padding(.horizontal, Layout.defaultSpacing)
         }
-
-        .contentMargins(.vertical, Layout.defaultSpacing)
-        .scrollIndicators(.hidden)
-        .padding(.horizontal, Layout.defaultSpacing)
     }
 }
 
@@ -55,5 +59,32 @@ extension FavouriteView {
         static let categorySpacing: CGFloat = 13
         static let headerSpacing: CGFloat = 10
         static let defaultSpacing: CGFloat = 16
+    }
+}
+
+
+struct SearchBar: View {
+    @Binding var text: String
+    
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .foregroundColor(.gray)
+            
+            TextField(.searchTextfildPlaceholder, text: $text)
+                .textFieldStyle(.plain)
+            
+            if !text.isEmpty {
+                Button(action: { text = "" }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(.hex7A8C5E30)
+        .clipShape(.capsule)
+        .padding(16)
     }
 }

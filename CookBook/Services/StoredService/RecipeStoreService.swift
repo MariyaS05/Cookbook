@@ -21,7 +21,7 @@ extension Container {
     }
 }
 protocol RecipeStoreServiceProtocol {
-    var recipeStoredData: AnyPublisher<[Recipe], Never> { get }
+    var recipeStoredData: AnyPublisher<[StoredRecipeModel], Never> { get }
     func fetchStoredRecipes()
     
     @MainActor
@@ -32,9 +32,9 @@ protocol RecipeStoreServiceProtocol {
 
 final class RecipeStoreService: RecipeStoreServiceProtocol {
     
-    private var recipeStoredDataPublisher: CurrentValueSubject<[Recipe], Never> = .init([])
+    private var recipeStoredDataPublisher: CurrentValueSubject<[StoredRecipeModel], Never> = .init([])
     private var modelContext: ModelContext?
-    var recipeStoredData: AnyPublisher<[Recipe], Never> {
+    var recipeStoredData: AnyPublisher<[StoredRecipeModel], Never> {
         recipeStoredDataPublisher.eraseToAnyPublisher()
     }
     
@@ -45,7 +45,7 @@ final class RecipeStoreService: RecipeStoreServiceProtocol {
     
     func fetchStoredRecipes() {
         let recipes = fetchStored()
-        recipeStoredDataPublisher.send(recipes.map({ $0.toDTO()}))
+        recipeStoredDataPublisher.send(recipes)
     }
     
     func checkIsStored(recipe: Recipe) -> Bool {

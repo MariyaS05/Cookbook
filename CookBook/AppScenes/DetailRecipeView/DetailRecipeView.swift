@@ -59,12 +59,12 @@ struct DetailRecipeView: View {
                     .padding(40)
                     .id(triggerAnimation)
                     .foregroundStyle(
-                                   LinearGradient(
-                                    gradient: Gradient(colors: [.red.opacity(0.5), .red]),
-                                       startPoint: .top,
-                                       endPoint: .bottom
-                                   )
-                               )
+                        LinearGradient(
+                            gradient: Gradient(colors: [.red.opacity(0.5), .red]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
             }
             
         })
@@ -76,12 +76,12 @@ struct DetailRecipeView: View {
     private func createSourceView(_ recipe: Recipe) -> some View {
         HStack {
             Image(systemName: "link")
-    
+            
             Button {
                 guard let url = recipe.youtubeURL else { return }
                 openURL(url)
             } label: {
-                Text("Youtube")
+                Text(.youtubeTitle)
                     .underline(true)
             }
             
@@ -89,7 +89,7 @@ struct DetailRecipeView: View {
                 guard let url = recipe.sourceURL else { return }
                 openURL(url)
             } label: {
-                Text("Source")
+                Text(.sourceTitle)
                     .underline(true)
             }
         }

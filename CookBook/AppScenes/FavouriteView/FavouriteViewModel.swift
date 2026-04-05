@@ -19,6 +19,9 @@ final class FavouriteViewModel: ViewModel {
     @Published
     var viewsState: LoadingState = .loading
     
+    @Published
+    var searchText: String = ""
+    
     override init() {
         super.init()
         
@@ -32,6 +35,18 @@ final class FavouriteViewModel: ViewModel {
     
     func fetchStoredRecipes() {
         recipeStoreService.fetchStoredRecipes()
+    }
+    
+    func filterRecipes(_ recipes: [Recipe]) -> [Recipe] {
+        if searchText.isEmpty {
+            return recipes
+        }
+        
+        return recipes.filter { recipe in
+            recipe.name.localizedCaseInsensitiveContains(searchText) ||
+            recipe.ingredients.compactMap({ $0.name}).contains(where: { $0.localizedCaseInsensitiveContains(searchText) }) ||
+            recipe.category?.localizedCaseInsensitiveContains(searchText) == true
+        }
     }
 }
 
@@ -52,7 +67,8 @@ private extension FavouriteViewModel {
             .filter ({ !$0.isEmpty })
             .receive(on: DispatchQueue.main)
             .sink { [weak self] storedRecipes in
-                self?.viewsState = .loaded(.init(recipes: storedRecipes))
+                
+                self?.viewsState = .loaded(.init(recipes: storedRecipes.sorted(by: { $0.savedDate > $1.savedDate}).map({ $0.toDTO()})))
             }.store(in: &cancellable)
     }
 }
