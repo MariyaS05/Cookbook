@@ -33,15 +33,24 @@ struct RecipeView: View {
         ScrollView(.horizontal) {
             HStack(spacing: Layout.categorySpacing) {
                 ForEach(viewModel.state.categories, id: \.id) { category in
-                    Text(category.name ?? "")
-                        .font(.playfairDisplay(.medium, 14))
-                        .foregroundStyle(.appBlack)
-                        .padding(.vertical, 5)
-                        .padding(.horizontal, 8)
-                        .overlay(
-                            Capsule()
-                                .stroke(.hexC2714F70, lineWidth: 1)
-                        )
+                    Button {
+                        viewModel.selectCategory(category)
+                    } label: {
+                        Text(category.name ?? "")
+                            .font(.playfairDisplay(.medium, 14))
+                            .foregroundStyle(viewModel.state.selectedCategory.id == category.id ? .hexFDF6EC : .appBlack)
+                            .padding(.vertical, 5)
+                            .padding(.horizontal, 8)
+                            .background(content: {
+                                Rectangle()
+                                    .fill(viewModel.state.selectedCategory.id == category.id ? Color.hexC2714F : .clear)
+                                    .clipShape(.capsule)
+                            })
+                            .overlay(
+                                Capsule()
+                                    .stroke(.hexC2714F70, lineWidth: 1)
+                            )
+                    }
                 }
             }
         }
@@ -97,6 +106,6 @@ struct RecipeView: View {
 
 #Preview {
     let sercvice = Container.shared.recipeService.register { MockRecipeService() }
- 
+    
     RecipeView()
 }

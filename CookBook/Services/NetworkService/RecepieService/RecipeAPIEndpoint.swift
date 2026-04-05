@@ -18,7 +18,8 @@ enum RecipeAPIEndpoint: APIEndpointProtocol {
     
     var path: String {
         switch self {
-        case .byLetter, .byCategory: return "/api/json/v1/1/search.php"
+        case .byLetter: return "/api/json/v1/1/search.php"
+        case .byCategory: return "/api/json/v1/1/filter.php"
         case .countries, .categories: return "/api/json/v1/1/list.php"
         case .byId: return "/api/json/v1/1/lookup.php"
         }

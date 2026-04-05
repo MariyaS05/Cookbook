@@ -17,6 +17,7 @@ extension APIClientProtocol {
         
         do {
             (data, response) = try await urlSession.data(for: request)
+            
         } catch let error as URLError {
             switch error.code {
             case .notConnectedToInternet,
@@ -34,8 +35,6 @@ extension APIClientProtocol {
         guard let httpResponse = response as? HTTPURLResponse else {
             return .failure(.invalidResponse)
         }
-    
-        print(String(data: data, encoding: .utf8))
         
         switch NetworkHTTPResponseService(urlResponse: httpResponse) {
         case .success:

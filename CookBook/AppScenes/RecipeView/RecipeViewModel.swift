@@ -25,6 +25,8 @@ final class RecipeViewModel: ViewModel {
     @ObservationIgnored
     private var refreshTask: Task<Void, Never>?
     
+    private var initialsRecipes: [Recipe] = []
+    
     override init() {
         super.init()
         
@@ -38,7 +40,30 @@ final class RecipeViewModel: ViewModel {
     }
     
     func refreshRecipeList() {
+        guard state.selectedCategory == .all else { return }
         fetchRecipes()
+    }
+    
+    func selectCategory(_ category: Category) {
+        if category == .all {
+            self.state.selectedCategory = category
+            self.state.recipes = initialsRecipes
+            self.state.loadingState = .loaded
+            return
+        }
+        refreshTask?.cancel()
+        refreshTask = Task {
+            guard !Task.isCancelled, let categoryName = category.id else { return }
+            let categoryList = await recipeService.fetchByCategory(categoryName)
+            switch categoryList {
+            case .success(let recipes):
+                self.state.recipes = recipes
+                self.state.loadingState = .loaded
+                self.state.selectedCategory = category
+            case .failure(let error):
+                router.presentAlert(error)
+            }
+        }
     }
 }
 
@@ -48,6 +73,7 @@ extension RecipeViewModel {
         var countries: [Country] = []
         var categories: [Category] = []
         var loadingState: LoadingState = .loading
+        var selectedCategory: Category = .all
     }
     
     enum LoadingState {
@@ -69,6 +95,7 @@ private extension RecipeViewModel {
                 case .success(let recipes):
                     self.state.recipes = recipes
                     self.state.loadingState = .loaded
+                    self.initialsRecipes = recipes
                 case .failure(let error):
                     router.presentAlert(error)
                 }
@@ -83,6 +110,7 @@ private extension RecipeViewModel {
                 switch initialCategoryResult {
                 case .success(let categories):
                     self.state.categories = categories
+                    self.state.categories.insert(.all, at: 0)
                 case .failure(let error):
                     router.presentAlert(error)
                 }
