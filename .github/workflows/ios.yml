@@ -1,0 +1,17 @@
+name: iOS CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: xcodebuild -version
+      - run: |
+          xcodebuild build \
+            -project CookBook.xcodeproj \
+            -scheme CookBook \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
