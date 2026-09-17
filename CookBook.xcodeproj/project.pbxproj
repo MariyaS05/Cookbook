@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		ED05BC8D2F5EF40C00CDC8B0 /* Factory in Frameworks */ = {isa = PBXBuildFile; productRef = ED05BC8C2F5EF40C00CDC8B0 /* Factory */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
 		EDB164B82F58685E005789A2 /* CookBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CookBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -19,6 +15,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Services/StoredService/RecipeStoreService.swift,
 			);
 			target = EDB164B72F58685E005789A2 /* CookBook */;
 		};
@@ -34,17 +31,6 @@
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
-
-/* Begin PBXFrameworksBuildPhase section */
-		EDB164B52F58685E005789A2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				ED05BC8D2F5EF40C00CDC8B0 /* Factory in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		EDB164AF2F58685E005789A2 = {
@@ -71,7 +57,6 @@
 			buildConfigurationList = EDB164C32F58685F005789A2 /* Build configuration list for PBXNativeTarget "CookBook" */;
 			buildPhases = (
 				EDB164B42F58685E005789A2 /* Sources */,
-				EDB164B52F58685E005789A2 /* Frameworks */,
 				EDB164B62F58685E005789A2 /* Resources */,
 			);
 			buildRules = (
